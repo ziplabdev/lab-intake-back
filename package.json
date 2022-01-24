@@ -1,0 +1,28 @@
+{
+  "name": "lab-intake-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon index.js --ignore 'lastCheck.json'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/local-auth": "^1.0.1",
+    "@googleapis/forms": "file:googleapis-forms-0.1.0_NodeJs.tar",
+    "cors": "^2.8.5",
+    "date-fns": "^2.28.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "googleapis": "^92.0.0",
+    "luxon": "^2.3.0",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^2.6.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
