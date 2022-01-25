@@ -1,10 +1,10 @@
-const fetch = require('node-fetch')
+// const fetch = require('node-fetch')
 const cors = require('cors')
 const express = require('express')
 const { google } = require('googleapis')
 const { application } = require('express')
 var bodyParser = require('body-parser')
-const fs = require('fs');
+const fs = require('fs')
 
 const serverless = require('serverless-http')
 
