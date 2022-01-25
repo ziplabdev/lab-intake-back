@@ -13,18 +13,24 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 const { DateTime } = require('luxon')
-// var datetime = new DateTime()
 /* global variables */
-var spreadsheetId = "1Q_AP2lah0X6YfwP-Dt_PlSgK5DdR051oVVYornfTEW8"
+
+var spreadsheetIdRes = "1DWoQIda4G1WrvXVgxTWInEITD5aftQV1RXoeFeC-DKk"
+// var spreadsheetId = JSON.parse(fs.readFileSync('spreadsheetId.json', "utf8")).spreadsheetId
+var spreadsheetId
+
 var spreadsheet
 var spreadsheetLength
 
-//hello world
-
 /* ROUTES HERE */
-app.get("/formdata", (req, res) => {
+
+// step 1
+app.get("/formdata", async (req, res) => {
+
+    // * getSpreadsheetIdFromRes()
+    await getSpreadsheetIdFromRes()
     // * getSpreadSheet()
-    getSpreadsheet()
+    await getSpreadsheet()
 
     // * filter(questions)
     const questions = filterSpreadsheet('questions')
@@ -32,15 +38,17 @@ app.get("/formdata", (req, res) => {
     var formJsonArray = [questions.length]
 
     // * create empty form json object
-    for(var i = 0; i < questions.length; i++){
+    for(var i = 0; i < questions.length; i++) {
         formJsonArray[i] = { "question" : questions[i], "questiontype" : "short-answer", "answer" : ""}
     }
-    
+
     // * return the json form data
     res.send(formJsonArray)
 })
 
+// on pressed for submit button
 app.post("/submitform", (req, res) => {
+    
     // * prepare answers
     var answers = Array(req.body.length)
     for(var i = 0; i < answers.length; i++){
@@ -53,8 +61,16 @@ app.post("/submitform", (req, res) => {
     res.send(req.body)
 })
 
+// for admin update clickup
 app.post("/getUpdates", (req, res) => {
-    updateClickUp()
+    console.log('updates')
+    // updateClickUp()
+})
+
+app.post("/updateSpreadsheetId", async (req, res) => {
+    // update google form with new spreadsheet Id
+    await getSpreadsheetIdFromRes()
+    await updateSpreadsheetId({values:[req.body.id]})
 })
 
 /* 
@@ -92,6 +108,46 @@ const filterSpreadsheet = (target) => {
 /*
     Google Sheets API stuff
 */
+
+const getSpreadsheetIdFromRes = async () => {
+    try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: "googlesheetscreds.json",
+            scopes: "https://www.googleapis.com/auth/spreadsheets",
+        });
+        
+        // Create client instance for auth
+        const client = await auth.getClient();
+    
+        // Instance of Google Sheets API
+        const googleSheets = google.sheets({ version: "v4", auth: client });
+        
+        // get metadata
+        const metaData = await googleSheets.spreadsheets.get({
+            auth,
+            spreadsheetId: spreadsheetIdRes,
+        });
+    
+        // get rows
+    
+        const getQuestions = await googleSheets.spreadsheets.values.get({
+            auth,
+            spreadsheetId: spreadsheetIdRes,
+            range: "Sheet1!B2"
+        }).then(
+            res => {
+                spreadsheetId = res.data.values[0][0]
+            }
+        )
+
+        // get data
+    }catch(error){
+        console.log(error)
+    }
+    // get new entries
+    // spreadsheet = spreadsheet.splice(1)
+}
+
 const getSpreadsheet = async () => {
     try {
         const auth = new google.auth.GoogleAuth({
@@ -108,14 +164,14 @@ const getSpreadsheet = async () => {
         // get metadata
         const metaData = await googleSheets.spreadsheets.get({
             auth,
-            spreadsheetId,
+            spreadsheetId: spreadsheetId,
         });
     
         // get rows
     
         const getQuestions = await googleSheets.spreadsheets.values.get({
             auth,
-            spreadsheetId,
+            spreadsheetId: spreadsheetId,
             range: "Form Responses 1!A:L"
         }).then(
             res => {
@@ -128,8 +184,6 @@ const getSpreadsheet = async () => {
     }catch(error){
         console.log(error)
     }
-    // get new entries
-    // spreadsheet = spreadsheet.splice(1)
 }
 
 const updateSpreadsheet = async (entry) => {
@@ -165,9 +219,43 @@ const updateSpreadsheet = async (entry) => {
     }
 }
 
+const updateSpreadsheetId = async (id) => {
+    try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: "googlesheetscreds.json",
+            scopes: "https://www.googleapis.com/auth/spreadsheets",
+        });
+        
+        // Create client instance for auth
+        const client = await auth.getClient();
+    
+        // Instance of Google Sheets API
+        const googleSheets = google.sheets({ version: "v4", auth: client });
+
+        // update spreadsheet
+        const appendEntry = await googleSheets.spreadsheets.values.update({
+            auth,
+            spreadsheetId: spreadsheetIdRes,
+            range: "Sheet1!B2",
+            valueInputOption: 'RAW',
+            resource:{
+                values: id
+              }
+        }).then(
+            () => {
+                console.log('successfully added')
+                // updateClickUp()
+            }
+        )
+    }catch(error){
+        console.log(error)
+    }
+}
+
 /*
     ClickUp API stuff
 */
+
 const updateClickUp = () => {
     console.log('updating click up...')
     // * re-get spreadsheet
@@ -234,9 +322,9 @@ const sendToClickUp = async (toSend) => {
             "name" : toSend[0][6],
             "description" : 
                 "Description: " + toSend[0][7] + 
-                "\nPersonality: " + toSend[0][9] + 
-                "\nDeliverables: " + toSend[0][8] + 
-                "\nSupporting Materials: " + toSend[0][11],
+                "\n\nPersonality: " + toSend[0][9] + 
+                "\n\nDeliverables: " + toSend[0][8] + 
+                "\n\nSupporting Materials: " + toSend[0][11],
             "assignees" : [],
             "tags" : [],
             "status" : "TO DO",
