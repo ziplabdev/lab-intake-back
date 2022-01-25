@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "devStart": "nodemon index.js --ignore 'lastCheck.json'"
+    "start": "./node_modules/.bin/netlify-lambda serve src",
+    "build": "./node_modules/.bin/netlify-lambda build src"
   },
   "keywords": [],
   "author": "",
@@ -19,8 +20,10 @@
     "express": "^4.17.2",
     "googleapis": "^92.0.0",
     "luxon": "^2.3.0",
+    "netlify-lambda": "^2.0.15",
     "node-cron": "^3.0.0",
-    "node-fetch": "^2.6.6"
+    "node-fetch": "^2.6.6",
+    "serverless-http": "^2.7.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

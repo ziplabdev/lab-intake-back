@@ -6,8 +6,11 @@ const { application } = require('express')
 var bodyParser = require('body-parser')
 const fs = require('fs');
 
+const serverless = require('serverless-http')
+
 const app = express()
 
+const router = express.Router()
 app.use(cors())
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); 
@@ -25,7 +28,7 @@ var spreadsheetLength
 /* ROUTES HERE */
 
 // step 1
-app.get("/formdata", async (req, res) => {
+router.get("/formdata", async (req, res) => {
 
     // * getSpreadsheetIdFromRes()
     await getSpreadsheetIdFromRes()
@@ -47,7 +50,7 @@ app.get("/formdata", async (req, res) => {
 })
 
 // on pressed for submit button
-app.post("/submitform", (req, res) => {
+router.post("/submitform", (req, res) => {
     
     // * prepare answers
     var answers = Array(req.body.length)
@@ -62,12 +65,12 @@ app.post("/submitform", (req, res) => {
 })
 
 // for admin update clickup
-app.post("/getUpdates", (req, res) => {
+router.post("/getUpdates", (req, res) => {
     console.log('updates')
     // updateClickUp()
 })
 
-app.post("/updateSpreadsheetId", async (req, res) => {
+router.post("/updateSpreadsheetId", async (req, res) => {
     // update google form with new spreadsheet Id
     await getSpreadsheetIdFromRes()
     await updateSpreadsheetId({values:[req.body.id]})
@@ -112,7 +115,7 @@ const filterSpreadsheet = (target) => {
 const getSpreadsheetIdFromRes = async () => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "googlesheetscreds.json",
+            keyFile: "googlesheetscreds.json", 
             scopes: "https://www.googleapis.com/auth/spreadsheets",
         });
         
@@ -359,12 +362,10 @@ const sendToClickUp = async (toSend) => {
         // console.log(json)
     })
 }
-app.listen(5001)
 
+app.use('/.netlify/functions/index', router)
 
-
-
-
+module.exports.handler = serverless(app)
 
 
 
