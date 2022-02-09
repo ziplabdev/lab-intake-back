@@ -26,9 +26,8 @@ var spreadsheetLength
 // step 1
 router.get("/formdata", async (req, res) => {
 
-    res.send('hello world')
-    // // * getSpreadsheetIdFromRes()
-    // await getSpreadsheetIdFromRes()
+    // * getSpreadsheetIdFromRes()
+    await getSpreadsheetIdFromRes()
     // // * getSpreadSheet()
     // await getSpreadsheet()
 
@@ -44,6 +43,8 @@ router.get("/formdata", async (req, res) => {
 
     // // * return the json form data
     // res.send(formJsonArray)
+    res.send(spreadsheetId)
+
 })
 
 // on pressed for submit button
