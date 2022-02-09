@@ -3,25 +3,21 @@ const cors = require('cors')
 const express = require('express')
 const { google } = require('googleapis')
 const { application } = require('express')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const fs = require('fs')
-
 const serverless = require('serverless-http')
-
 const app = express()
-
 const router = express.Router()
 app.use(cors())
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 const { DateTime } = require('luxon')
+
 /* global variables */
 
 var spreadsheetIdRes = "1DWoQIda4G1WrvXVgxTWInEITD5aftQV1RXoeFeC-DKk"
-// var spreadsheetId = JSON.parse(fs.readFileSync('spreadsheetId.json', "utf8")).spreadsheetId
 var spreadsheetId
-
 var spreadsheet
 var spreadsheetLength
 
@@ -97,7 +93,7 @@ const filterSpreadsheet = (target) => {
 
         while(entriesTimeStamp > lastCheckDateInSeconds){
             updates.push(spreadsheet[entry])
-            entriesTimeStamp = async () => await DateTime.fromFormat(spreadsheet[entry--][0], "MM/dd/yyyy HH:mm:ss").ts
+            entriesTimeStamp = async () => await DateTime.fromFormat(spreadsheet[entry--][0], "MM/dd/yyyy HH:mm:ss").ts.catch(e => console.log(e))
         }
 
         // add to updates array
@@ -181,7 +177,7 @@ const getSpreadsheet = async () => {
                 spreadsheet = res.data.values
                 spreadsheetLength = res.data.values.length
             }
-        )
+        ).catch(e => console.log(e))
 
         // get data
     }catch(error){
