@@ -26,23 +26,24 @@ var spreadsheetLength
 // step 1
 router.get("/formdata", async (req, res) => {
 
-    // * getSpreadsheetIdFromRes()
-    await getSpreadsheetIdFromRes()
-    // * getSpreadSheet()
-    await getSpreadsheet()
+    res.send('hello world')
+    // // * getSpreadsheetIdFromRes()
+    // await getSpreadsheetIdFromRes()
+    // // * getSpreadSheet()
+    // await getSpreadsheet()
 
-    // * filter(questions)
-    const questions = filterSpreadsheet('questions')
+    // // * filter(questions)
+    // const questions = filterSpreadsheet('questions')
 
-    var formJsonArray = [questions.length]
+    // var formJsonArray = [questions.length]
 
-    // * create empty form json object
-    for(var i = 0; i < questions.length; i++) {
-        formJsonArray[i] = { "question" : questions[i], "questiontype" : "short-answer", "answer" : ""}
-    }
+    // // * create empty form json object
+    // for(var i = 0; i < questions.length; i++) {
+    //     formJsonArray[i] = { "question" : questions[i], "questiontype" : "short-answer", "answer" : ""}
+    // }
 
-    // * return the json form data
-    res.send(formJsonArray)
+    // // * return the json form data
+    // res.send(formJsonArray)
 })
 
 // on pressed for submit button
