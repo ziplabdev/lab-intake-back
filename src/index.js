@@ -33,6 +33,7 @@ router.get("/formdata", async (req, res) => {
 
     // // * filter(questions)
     // const questions = filterSpreadsheet('questions')
+    const questions = [1, 2, 3, 4]
 
     var formJsonArray = [questions.length]
 
