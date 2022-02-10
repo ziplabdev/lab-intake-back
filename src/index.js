@@ -42,6 +42,7 @@ router.get("/formdata", async (req, res) => {
         formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
     }
 
+    console.log(spreadsheetId)
     // // * return the json form data
     res.send(formJsonArray)
 
