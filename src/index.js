@@ -34,7 +34,7 @@ router.get("/formdata", async (req, res) => {
     // // * filter(questions)
     // const questions = filterSpreadsheet('questions')
 
-    // var formJsonArray = [questions.length]
+    var formJsonArray = [questions.length]
 
     // // * create empty form json object
     // for(var i = 0; i < questions.length; i++) {
@@ -42,8 +42,7 @@ router.get("/formdata", async (req, res) => {
     // }
 
     // // * return the json form data
-    // res.send(formJsonArray)
-    res.send('hello')
+    res.send(formJsonArray)
 
 })
 
