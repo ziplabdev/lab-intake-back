@@ -27,23 +27,24 @@ var spreadsheetLength
 router.get("/formdata", async (req, res) => {
 
     // * getSpreadsheetIdFromRes()
-    spreadsheetId = await getSpreadsheetIdFromRes()
+    sId = await getSpreadsheetIdFromRes()
+    res.json([sID])
     // // * getSpreadSheet()
-    await getSpreadsheet()
+    // await getSpreadsheet()
 
     // // * filter(questions)
-    // const questions = await filterSpreadsheet('questions')
-    const questions = [1, 2, 3, 4]
+    // // const questions = await filterSpreadsheet('questions')
+    // const questions = [1, 2, 3, 4]
 
-    var formJsonArray = [questions.length]
+    // var formJsonArray = [questions.length]
 
-    // * create empty form json object
-    for(var i = 0; i < questions.length; i++) {
-        formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
-    }
+    // // * create empty form json object
+    // for(var i = 0; i < questions.length; i++) {
+    //     formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
+    // }
 
     // // * return the json form data
-    res.json([spreadsheetId])
+    // res.json([spreadsheetId])
 
 })
 
