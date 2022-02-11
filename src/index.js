@@ -27,24 +27,23 @@ var spreadsheetLength
 router.get("/formdata", async (req, res) => {
 
     // * getSpreadsheetIdFromRes()
-    sId = await getSpreadsheetIdFromRes()
-    res.json([sID])
-    // // * getSpreadSheet()
-    // await getSpreadsheet()
+    await getSpreadsheetIdFromRes()
+    // * getSpreadSheet()
+    await getSpreadsheet()
 
     // // * filter(questions)
-    // // const questions = await filterSpreadsheet('questions')
-    // const questions = [1, 2, 3, 4]
+    // const questions = await filterSpreadsheet('questions')
+    const questions = [1, 2, 3, 4]
 
-    // var formJsonArray = [questions.length]
+    var formJsonArray = [questions.length]
 
-    // // * create empty form json object
-    // for(var i = 0; i < questions.length; i++) {
-    //     formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
-    // }
+    // * create empty form json object
+    for(var i = 0; i < questions.length; i++) {
+        formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
+    }
 
     // // * return the json form data
-    // res.json([spreadsheetId])
+    res.json({})
 
 })
 
@@ -112,44 +111,42 @@ const filterSpreadsheet = (target) => {
 */
 
 const getSpreadsheetIdFromRes = async () => {
-    // try {
-    //     const auth = new google.auth.GoogleAuth({
-    //         keyFile: "googlesheetscreds.json", 
-    //         scopes: "https://www.googleapis.com/auth/spreadsheets",
-    //     });
+    try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: "googlesheetscreds.json", 
+            scopes: "https://www.googleapis.com/auth/spreadsheets",
+        });
         
-    //     // Create client instance for auth
-    //     const client = await auth.getClient();
+        // Create client instance for auth
+        const client = await auth.getClient();
     
-    //     // Instance of Google Sheets API
-    //     const googleSheets = google.sheets({ version: "v4", auth: client });
+        // Instance of Google Sheets API
+        const googleSheets = google.sheets({ version: "v4", auth: client });
         
-    //     // get metadata
-    //     const metaData = await googleSheets.spreadsheets.get({
-    //         auth,
-    //         spreadsheetId: spreadsheetIdRes,
-    //     });
+        // get metadata
+        const metaData = await googleSheets.spreadsheets.get({
+            auth,
+            spreadsheetId: spreadsheetIdRes,
+        });
     
-    //     // get rows
+        // get rows
     
-    //     const getQuestions = await googleSheets.spreadsheets.values.get({
-    //         auth,
-    //         spreadsheetId: spreadsheetIdRes,
-    //         range: "Sheet1!B2"
-    //     }).then(
-    //         res => {
-    //             spreadsheetId = res.data.values[0][0]
-    //             return spreadsheetId
-    //         }
-    //     )
+        const getQuestions = await googleSheets.spreadsheets.values.get({
+            auth,
+            spreadsheetId: spreadsheetIdRes,
+            range: "Sheet1!B2"
+        }).then(
+            res => {
+                spreadsheetId = res.data.values[0][0]
+            }
+        )
 
-    //     // get data
-    // }catch(error){
-    //     console.log(error)
-    // }
+        // get data
+    }catch(error){
+        console.log(error)
+    }
     // get new entries
     // spreadsheet = spreadsheet.splice(1)
-    return 'id'
 }
 
 const getSpreadsheet = async () => {
