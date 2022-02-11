@@ -111,43 +111,44 @@ const filterSpreadsheet = (target) => {
 */
 
 const getSpreadsheetIdFromRes = async () => {
-    try {
-        const auth = new google.auth.GoogleAuth({
-            keyFile: "googlesheetscreds.json", 
-            scopes: "https://www.googleapis.com/auth/spreadsheets",
-        });
+    // try {
+    //     const auth = new google.auth.GoogleAuth({
+    //         keyFile: "googlesheetscreds.json", 
+    //         scopes: "https://www.googleapis.com/auth/spreadsheets",
+    //     });
         
-        // Create client instance for auth
-        const client = await auth.getClient();
+    //     // Create client instance for auth
+    //     const client = await auth.getClient();
     
-        // Instance of Google Sheets API
-        const googleSheets = google.sheets({ version: "v4", auth: client });
+    //     // Instance of Google Sheets API
+    //     const googleSheets = google.sheets({ version: "v4", auth: client });
         
-        // get metadata
-        const metaData = await googleSheets.spreadsheets.get({
-            auth,
-            spreadsheetId: spreadsheetIdRes,
-        });
+    //     // get metadata
+    //     const metaData = await googleSheets.spreadsheets.get({
+    //         auth,
+    //         spreadsheetId: spreadsheetIdRes,
+    //     });
     
-        // get rows
+    //     // get rows
     
-        const getQuestions = await googleSheets.spreadsheets.values.get({
-            auth,
-            spreadsheetId: spreadsheetIdRes,
-            range: "Sheet1!B2"
-        }).then(
-            res => {
-                spreadsheetId = res.data.values[0][0]
-                return spreadsheetId
-            }
-        )
+    //     const getQuestions = await googleSheets.spreadsheets.values.get({
+    //         auth,
+    //         spreadsheetId: spreadsheetIdRes,
+    //         range: "Sheet1!B2"
+    //     }).then(
+    //         res => {
+    //             spreadsheetId = res.data.values[0][0]
+    //             return spreadsheetId
+    //         }
+    //     )
 
-        // get data
-    }catch(error){
-        console.log(error)
-    }
+    //     // get data
+    // }catch(error){
+    //     console.log(error)
+    // }
     // get new entries
     // spreadsheet = spreadsheet.splice(1)
+    return 'id'
 }
 
 const getSpreadsheet = async () => {
