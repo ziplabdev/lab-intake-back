@@ -43,7 +43,7 @@ router.get("/formdata", async (req, res) => {
     }
 
     // // * return the json form data
-    res.json({})
+    res.send({})
 
 })
 
@@ -139,7 +139,7 @@ const getSpreadsheetIdFromRes = async () => {
             res => {
                 spreadsheetId = res.data.values[0][0]
             }
-        )
+        ).catch(error => {console.log(error)})
 
         // get data
     }catch(error){
