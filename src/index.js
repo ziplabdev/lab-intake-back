@@ -27,7 +27,7 @@ var spreadsheetLength
 router.get("/formdata", async (req, res) => {
 
     // * getSpreadsheetIdFromRes()
-    await getSpreadsheetIdFromRes()
+    spreadsheetId = await getSpreadsheetIdFromRes()
     // // * getSpreadSheet()
     await getSpreadsheet()
 
@@ -138,6 +138,7 @@ const getSpreadsheetIdFromRes = async () => {
         }).then(
             res => {
                 spreadsheetId = res.data.values[0][0]
+                return spreadsheetId
             }
         )
 
