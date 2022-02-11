@@ -43,7 +43,7 @@ router.get("/formdata", async (req, res) => {
     }
 
     // // * return the json form data
-    res.send({})
+    res.send(["hello"])
 
 })
 
