@@ -29,21 +29,20 @@ router.get("/formdata", async (req, res) => {
     // * getSpreadsheetIdFromRes()
     await getSpreadsheetIdFromRes()
     // * getSpreadSheet()
-    await getSpreadsheet()
+    // await getSpreadsheet()
 
     // // * filter(questions)
     // const questions = await filterSpreadsheet('questions')
-    const questions = [1, 2, 3, 4]
 
-    var formJsonArray = [questions.length]
+    // var formJsonArray = [questions.length]
 
-    // * create empty form json object
-    for(var i = 0; i < questions.length; i++) {
-        formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
-    }
+    // // * create empty form json object
+    // for(var i = 0; i < questions.length; i++) {
+    //     formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
+    // }
 
-    // // * return the json form data
-    res.send(["hello"])
+    // * return the json form data
+    res.send(spreadsheetIdRes)
 
 })
 
@@ -144,9 +143,8 @@ const getSpreadsheetIdFromRes = async () => {
         // get data
     }catch(error){
         console.log(error)
+        spreadsheetIdRes = 'error'
     }
-    // get new entries
-    // spreadsheet = spreadsheet.splice(1)
 }
 
 const getSpreadsheet = async () => {
