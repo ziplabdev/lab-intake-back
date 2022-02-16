@@ -8,7 +8,7 @@ const fs = require('fs')
 const serverless = require('serverless-http')
 const app = express()
 const router = express.Router()
-const creds = (`./googlesheetscreds.json`)
+const creds = (`googlesheetscreds.json`)
 app.use(cors())
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); 
