@@ -143,7 +143,7 @@ const getSpreadsheetIdFromRes = async () => {
         // get data
     }catch(error){
         console.log(error)
-        spreadsheetIdRes = 'error'
+        spreadsheetIdRes = error
     }
 }
 
