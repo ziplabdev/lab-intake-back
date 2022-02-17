@@ -3,4 +3,4 @@
   functions = "functions"
 
 [functions]
-  included_files = ["/**.json"]
+  included_files = ["src/**.json"]
