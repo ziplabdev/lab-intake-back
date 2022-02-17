@@ -39,11 +39,11 @@ router.get("/formdata", async (req, res) => {
 
     // * create empty form json object
     for(var i = 0; i < questions.length; i++) {
-        formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
+        formJsonArray[i] = { "question" : questions[i], "questiontype" : "short-answer", "answer" : ""}
     }
 
     // * return the json form data
-    res.send(questions)
+    res.send(formJsonArray)
 
 })
 
