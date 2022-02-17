@@ -30,20 +30,20 @@ router.get("/formdata", async (req, res) => {
     // * getSpreadsheetIdFromRes()
     await getSpreadsheetIdFromRes()
     // * getSpreadSheet()
-    // await getSpreadsheet()
+    await getSpreadsheet()
 
-    // // * filter(questions)
-    // const questions = await filterSpreadsheet('questions')
+    // * filter(questions)
+    const questions = await filterSpreadsheet('questions')
 
-    // var formJsonArray = [questions.length]
+    var formJsonArray = [questions.length]
 
-    // // * create empty form json object
-    // for(var i = 0; i < questions.length; i++) {
-    //     formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
-    // }
+    // * create empty form json object
+    for(var i = 0; i < questions.length; i++) {
+        formJsonArray[i] = { "question" : 'questions[i]', "questiontype" : "short-answer", "answer" : ""}
+    }
 
     // * return the json form data
-    res.send(spreadsheetIdRes)
+    res.send(questions)
 
 })
 
@@ -157,7 +157,7 @@ const getSpreadsheetIdFromRes = async () => {
 const getSpreadsheet = async () => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "googlesheetscreds.json",
+            keyFile: creds,
             scopes: "https://www.googleapis.com/auth/spreadsheets",
         });
         
