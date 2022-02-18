@@ -112,11 +112,6 @@ const filterSpreadsheet = (target) => {
 
 const getSpreadsheetIdFromRes = async () => {
     try {
-        // const auth = new google.auth.GoogleAuth({
-        //     keyFile: "googlesheetscreds.json", 
-        //     scopes: "https://www.googleapis.com/auth/spreadsheets",
-        // });
-        
         const auth = new google.auth.GoogleAuth({
             keyFile: creds, 
             scopes: "https://www.googleapis.com/auth/spreadsheets",
@@ -228,7 +223,7 @@ const updateSpreadsheet = async (entry) => {
 const updateSpreadsheetId = async (id) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "googlesheetscreds.json",
+            keyFile: creds,
             scopes: "https://www.googleapis.com/auth/spreadsheets",
         });
         
