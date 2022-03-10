@@ -52,7 +52,7 @@ router.get("/formdata", async (req, res) => {
 // on pressed for submit button
 router.post("/submitform", (req, res) => {
     
-    console.log(req)
+    console.log(req.body)
     // * prepare answers, this just fills an 'answer' array with the user's responses
     var answers = Array(req.body.length)
     for(var i = 0; i < answers.length; i++){
@@ -60,7 +60,7 @@ router.post("/submitform", (req, res) => {
     }
     // *update spreadsheet, this creates a json object with the date, followed by the answers {values: [date, answers...]}
     var sheetValues = {values: [DateTime.now().toFormat("MM/dd/yyyy HH:mm:ss") ,...answers]}
-    console.log(sheetValues)
+    // console.log(sheetValues)
     updateSpreadsheet(sheetValues)
     // * updateClickup() will be triggered on callback after updating spreadsheet boi
     // res.send(req.body)
