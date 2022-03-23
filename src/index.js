@@ -5,6 +5,7 @@ const { google } = require('googleapis');
 const { application } = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const cron = require('cron')
 const serverless = require('serverless-http');
 const app = express()
 const router = express.Router()
@@ -46,7 +47,12 @@ router.get("/formdata", async (req, res) => {
 
     // * return the json form data
     res.send(formJsonArray)
+})
 
+// webhook for updates to spreadsheet
+router.post("/update", (req, res) => {
+    console.log('/update triggered')   
+   res.send('RECIEVED YOUR UPDATE BRO')
 })
 
 // on pressed for submit button
@@ -330,9 +336,9 @@ const sendToClickUp = async (toSend) => {
         "name" : toSend[6],
         "description" : 
             "Description: " + toSend[7] + 
-            "\n\nPersonality: " + toSend[9] + 
-            "\n\nDeliverables: " + toSend[8] + 
-            "\n\nSupporting Materials: " + toSend[11],
+            "\n\n-----------\n\nPersonality: " + toSend[9] + 
+            "\n\n-----------\n\nDeliverables: " + toSend[8] + 
+            "\n\n-----------\n\nSupporting Materials: " + toSend[11],
         "assignees" : [],
         "tags" : [],
         "status" : "TO DO",
