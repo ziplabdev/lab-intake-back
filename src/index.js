@@ -5,18 +5,18 @@ const { google } = require('googleapis');
 const { application } = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const cron = require('cron')
+const cron = require('node-cron')
 const serverless = require('serverless-http');
 const app = express()
 const router = express.Router()
 const creds = (`src/googlesheetscreds.json`)
+const checkFile = (`src/lastCheck.json`)
 
 app.use(cors())
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 const { DateTime } = require('luxon');
-const { hoursToSeconds } = require('date-fns');
 
 /* global variables */
 
@@ -24,6 +24,7 @@ var spreadsheetIdRes = "1DWoQIda4G1WrvXVgxTWInEITD5aftQV1RXoeFeC-DKk"
 var spreadsheetId
 var spreadsheet
 var spreadsheetLength
+
 
 /* ROUTES HERE */
 
@@ -49,12 +50,6 @@ router.get("/formdata", async (req, res) => {
     res.send(formJsonArray)
 })
 
-// webhook for updates to spreadsheet
-router.post("/update", (req, res) => {
-    console.log('/update triggered')   
-   res.send('RECIEVED YOUR UPDATE BRO')
-})
-
 // on pressed for submit button
 router.post("/submitform", (req, res) => {
     
@@ -74,9 +69,12 @@ router.post("/submitform", (req, res) => {
 })
 
 // for admin update clickup
-router.post("/getUpdates", (req, res) => {
-    console.log('updates')
-    // updateClickUp()
+router.post("/getUpdates", async (req, res) => {
+    console.log('updating click up for admin...')
+
+    getUpdates()
+    
+    res.send('ok')
 })
 
 router.post("/updateSpreadsheetId", async (req, res) => {
@@ -89,34 +87,67 @@ router.post("/updateSpreadsheetId", async (req, res) => {
     Internal Methods
 */
 
+async function getUpdates() {
+    // get the id 
+    await getSpreadsheetIdFromRes()
+
+    var updatesList
+
+    // get the most up to date spreadsheet from google
+        // then filter it by only updates and puts the array in var updatesList
+    await getSpreadsheet()
+    .then(() =>  {
+        updatesList = filterSpreadsheet('updates-only')
+        console.log(updatesList)
+        
+        }
+    )
+    .catch((error) => console.log(error))
+
+
+    // now that updatesList has an array of updates we can loop through them and send each updates to clickup like this
+    for( i = 0; i < updatesList.length; i ++){
+        sendToClickUp(updatesList[i])
+    }
+}
+
 const filterSpreadsheet = (target) => {
     if(target === 'questions'){
         // * return questions only
         const questions = spreadsheet[0].splice(1)
         return questions
-    }else if (target === 'updates-only'){
-        console.log('filtering for updates...')
+    }else if (target === 'recent-only'){
         // * return new entries only
-        var updates = spreadsheet[spreadsheet.length-1]
-        console.log("updates " + updates)
-        
-        // var entry = spreadsheetLength-1
-        // const lastCheckDate = fs.readFileSync('lastCheck.json', "utf8")
-        // var lastCheckDateInSeconds = DateTime.fromFormat(JSON.parse(lastCheckDate).checkedOn, "MM/dd/yyyy HH:mm:ss")
+        var recent = spreadsheet[spreadsheet.length-1]        
+        return(recent)
 
-        // var entriesTimeStamp = DateTime.fromFormat(spreadsheet[entry][0], "MM/dd/yyyy HH:mm:ss")
+    }else if (target == 'updates-only') {
 
-        // while(entriesTimeStamp > lastCheckDateInSeconds){
-        //     updates.push(spreadsheet[entry])
-        //     entriesTimeStamp = async () => await DateTime.fromFormat(spreadsheet[entry--][0], "MM/dd/yyyy HH:mm:ss").ts.catch(e => console.log(e))
-        // }
+        // lets get the last check date
+        var dateFile = fs.readFileSync(checkFile, "utf8")
+        var checkDate = DateTime.fromFormat(JSON.parse(dateFile).checkedOn, "M/dd/yyyy HH:mm:ss").ts
+        var updates = []
+        // now let's loop through each spreadsheet entry, adding new entries to our updates array
+        for(i = 1; i < spreadsheet.length; i++) {
+            // lets print each date first
+            entryDate = DateTime.fromFormat(spreadsheet[i][0], "M/dd/yyyy HH:mm:ss").ts
+            if (checkDate < entryDate) {
+                console.log(checkDate + " < " + entryDate)
+                // now let's add it to updates
+                updates.push(spreadsheet[i])
+            }
+        }
 
-        // // add to updates array
-        // newCheck = {"checkedOn" : DateTime.now().toFormat("MM/dd/yyyy HH:mm:ss")}
-        // fs.writeFileSync("lastCheck.json", JSON.stringify(newCheck))
-        return(updates)
+        if(updates.length === 0) {
+            console.log('nothing new to add to click up')
+        }
+
+        // save current date
+        newCheck = {"checkedOn" : DateTime.now().toFormat("M/dd/yyyy HH:mm:ss")}
+        fs.writeFileSync("src/lastCheck.json", JSON.stringify(newCheck))
+        return updates
     }
-    return spreadsheet
+    return []
 }
 
 /*
@@ -269,12 +300,12 @@ const updateSpreadsheetId = async (id) => {
 */
 
 const updateClickUp = () => {
-    console.log('updating click up...')
+    console.log('updating click up (recent only)...')
     // * re-get spreadsheet
     // * then - filter new entries
     // * then - post new entries to click up
     getSpreadsheet()
-    .then(() =>  sendToClickUp(filterSpreadsheet('updates-only')))
+    .then(() =>  sendToClickUp(filterSpreadsheet('recent-only')))
     .catch((error) => console.log(error))
 
 }
@@ -413,6 +444,12 @@ const sendToClickUp = async (toSend) => {
         console.log(error);
       });
 }
+
+cron.schedule('10 * * * * *', () => {
+    console.log('running a task every minute')
+    // trigger the check updates function, but first outsource the update function from our route
+    getUpdates()
+})
 
 app.use('/.netlify/functions/index', router)
 

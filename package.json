@@ -15,7 +15,6 @@
     "@google-cloud/local-auth": "^1.0.1",
     "axios": "^0.26.0",
     "cors": "^2.8.5",
-    "cron": "^1.8.2",
     "date-fns": "^2.28.0",
     "ejs": "^3.1.6",
     "encoding": "^0.1.13",
